@@ -660,7 +660,7 @@
 
     <script>
         // Google Apps Script Web App URL - REPLACE THIS WITH YOUR ACTUAL URL
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/a/macros/sahanas.com/s/AKfycbzLHTNm-d-oBzWZrHuyOQ1YvWiMIVXB2SQItPyAmR7ksI7A01V-27RaHaUs7QWsqt8H/exec';
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwtR0XD2coCfLpNH7f8Am9kLJT2aQM_hpcYqAedGcFcKo8LnVNRxOdj-hpBg5_eAD8d/exec';
 
         const form = document.getElementById('vendorForm');
         const successMessage = document.getElementById('successMessage');
@@ -674,27 +674,26 @@
             formData.append('timestamp', new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }));
 
             try {
-                // Send data to Google Apps Script
-                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                // Send data to Google Apps Script using no-cors mode
+                // This bypasses CORS restrictions but means we can't read the response
+                await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
+                    mode: 'no-cors',
                     body: formData
                 });
 
-                if (response.ok) {
-                    successMessage.style.display = 'block';
-                    form.reset();
-                    errorMessage.style.display = 'none';
-                    
-                    // Scroll to success message
-                    successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    
-                    // Hide success message after 5 seconds
-                    setTimeout(() => {
-                        successMessage.style.display = 'none';
-                    }, 5000);
-                } else {
-                    throw new Error('Submission failed');
-                }
+                // Since we're using no-cors, we assume success if no error was thrown
+                successMessage.style.display = 'block';
+                form.reset();
+                errorMessage.style.display = 'none';
+                
+                // Scroll to success message
+                successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+                // Hide success message after 5 seconds
+                setTimeout(() => {
+                    successMessage.style.display = 'none';
+                }, 5000);
             } catch (error) {
                 errorMessage.style.display = 'block';
                 console.error('Error:', error);
